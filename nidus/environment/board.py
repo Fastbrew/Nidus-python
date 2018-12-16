@@ -108,7 +108,8 @@ class Board(object):
                 pos = np.argwhere(self.state == unit)[0]
                 legal = legal_moves(pos, self.state)
 
-                print(legal_moves(pos, self.state.shape))
+                print(unit)
+                print(legal_moves(pos, self.state))
                 print(pos)
 
         return
