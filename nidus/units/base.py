@@ -11,6 +11,7 @@ class Base(object):
         self.stamina = stamina
         self.agility = agility
 
+        self.experience = 0
         self.alive = True
 
         pass
