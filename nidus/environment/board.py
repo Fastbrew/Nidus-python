@@ -6,9 +6,8 @@ import numpy as np
 
 from ..utils.distance import distance
 from ..utils.legal_moves import legal_moves
+from ..utils.move_unit import move_unit
 from ..units import units
-
-print(units)
 
 
 ## Should be exposed via utils
@@ -57,8 +56,9 @@ class Board(object):
         self.unit = 1
 
         self.stats = {}
+        self.units = {}
         for player in range(1, self.players + 1):
-            self.stats[player] = {'units': {}}
+            self.stats[player] = {'units': []}
 
         pos_x = (int(state.shape[1] / 2) - 1, int(state.shape[1] / 2))
 
@@ -66,13 +66,16 @@ class Board(object):
 
             state[0, pos] = self.unit
 
-            self.stats[self.player]['units'][self.unit] = new_unit()
+            self.stats[self.player]['units'].append(self.unit)
+            self.units[self.unit] = new_unit()
             self.unit += 1
 
             self.iter_player()
 
             state[-1, pos] = self.unit
-            self.stats[self.player]['units'][self.unit] = new_unit()
+            
+            self.stats[self.player]['units'].append(self.unit)
+            self.units[self.unit] = new_unit()
             self.unit += 1
 
             self.iter_player()
@@ -82,13 +85,17 @@ class Board(object):
                 state = state.T
 
                 state[0, pos] = self.unit
-                self.stats[self.player]['units'][self.unit] = new_unit()
+                
+                self.stats[self.player]['units'].append(self.unit)
+                self.units[self.unit] = new_unit()
                 self.unit += 1
 
                 self.iter_player()
 
                 state[-1, pos] = self.unit
-                self.stats[self.player]['units'][self.unit] = new_unit()
+                
+                self.stats[self.player]['units'].append(self.unit)
+                self.units[self.unit] = new_unit()
                 self.unit += 1
 
                 self.iter_player()
@@ -97,19 +104,32 @@ class Board(object):
 
         self.state = state
 
-        print(self.stats)
-
         return
 
     def new_turn(self):
 
-        for player in self.stats:
-            for unit in self.stats[player]['units']:
-                pos = np.argwhere(self.state == unit)[0]
-                legal = legal_moves(pos, self.state)
+        probabilities = np.array([i.experience for i in self.units.values()])
+        probabilities = np.exp(probabilities - probabilities.max()) / np.exp(probabilities - probabilities.max()).sum(axis = 0)
 
-                print(unit)
-                print(legal_moves(pos, self.state))
-                print(pos)
+        order = np.random.choice(list(self.units.keys()),
+                size = len(self.units),
+                replace = False,
+                p = probabilities)
+
+        for unit in order:
+
+            old_pos = np.argwhere(self.state == unit)[0]
+
+            legal = legal_moves(old_pos, self.state)
+
+            rand = np.random.uniform(size = (4,))
+
+            movement = legal * rand
+            cardinal = np.argwhere(movement == movement.max())[0]
+
+            new_pos = move_unit(old_pos, cardinal)
+
+            self.state[tuple(old_pos)] = 0
+            self.state[tuple(new_pos)] = unit
 
         return
