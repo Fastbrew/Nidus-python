@@ -16,12 +16,12 @@ def main():
 
         s = b.__state__()
         print(str(s))
-        time.sleep(2)
+
         b.new_turn()
 
     s = b.__state__()
     print(str(s))
-    time.sleep(2)
+
     print(b.winner)
 
     return
