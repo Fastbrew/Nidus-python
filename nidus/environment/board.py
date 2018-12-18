@@ -1,5 +1,5 @@
 """
-Board (game state) object for Nidus.
+Board (game state) object for Vein.
 """
 
 import numpy as np
