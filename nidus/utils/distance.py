@@ -6,4 +6,4 @@ import numpy as np
 
 
 def distance(a, b):
-    return np.abs(a-b).sum()
+    return np.abs(a-b).sum(axis = 1)
