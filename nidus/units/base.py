@@ -4,8 +4,9 @@ Base class for units.
 
 
 class Base(object):
-    def __init__(self, health, strength, stamina, agility):
+    def __init__(self, owner_id, health, strength, stamina, agility):
 
+        self.owner_id = owner_id
         self.health = health
         self.strength = strength
         self.stamina = stamina
