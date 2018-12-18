@@ -12,6 +12,3 @@ To view a simulation, run:
 ```
 $ python3 -m nidus.main
 ```
-
-## TODO:
-- Figure out attacking (matrix based distance metrics)
