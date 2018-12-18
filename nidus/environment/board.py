@@ -1,5 +1,5 @@
 """
-Board (game state) object for Nidus.
+Board (game state) object for Vein.
 """
 
 import numpy as np
@@ -131,7 +131,7 @@ class Board(object):
     def _move(self):
 
         probabilities = np.array([i.experience for i in self.units.values()])
-        probabilities = np.exp(probabilities - probabilities.max()) / np.exp(probabilities - probabilities.max()).sum(axis = 0)
+        probabilities = np.exp(probabilities) / np.exp(probabilities).sum(axis = 0)
 
         order = np.random.choice(list(self.units.keys()),
                 size = len(self.units),
@@ -147,12 +147,15 @@ class Board(object):
             rand = np.random.uniform(size = (4,))
 
             movement = legal * rand
-            cardinal = np.argwhere(movement == movement.max())[0]
 
-            new_pos = move_unit(old_pos, cardinal)
+            if movement.sum() != 0:
+                
+                cardinal = np.argwhere(movement == movement.max())[0]
 
-            self.state[tuple(old_pos)] = 0
-            self.state[tuple(new_pos)] = unit
+                new_pos = move_unit(old_pos, cardinal)
+
+                self.state[tuple(old_pos)] = 0
+                self.state[tuple(new_pos)] = unit
 
         return
 
@@ -184,6 +187,7 @@ class Board(object):
 
         self._attack()
         self._status()
-        self._move()
+        if len(self.units) > 1:
+            self._move()
 
         return
