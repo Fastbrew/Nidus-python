@@ -9,17 +9,19 @@ import time
 
 def main():
 
-    b = Board(dims = (10, 10), players = 2)
+    b = Board(dims = (4, 4), players = 2)
     b.new_game()
 
-    while True:
+    while b.winner is None:
 
         s = b.__state__()
         print(str(s))
 
-        time.sleep(1)
-
         b.new_turn()
+
+    s = b.__state__()
+    print(str(s))
+    print(b.winner)
 
     return
 if __name__ == '__main__':
